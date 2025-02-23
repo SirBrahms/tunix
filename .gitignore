@@ -1,2 +1,10 @@
 kernel/build
 *.o
+libc/*.d
+libc/*/*.d
+libc/*/*/*.d
+libc/*.o
+libc/*/*.o
+libc/*/*/*.o
+libc/*.a
+sysroot
