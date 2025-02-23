@@ -1,7 +1,7 @@
 #ifndef __STRING_HEADER
 #define __STRING_HEADER
 
-#include <stddefs.h>
+#include <stddef.h>
 
 #ifdef __cplusplus
 extern "C" {
