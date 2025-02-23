@@ -1,4 +1,5 @@
 kernel/build
+kernel/isodir
 *.o
 libc/*.d
 libc/*/*.d
