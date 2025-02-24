@@ -25,7 +25,11 @@ enum VGA_color {
 static const size_t VGA_width = 80;
 static const size_t VGA_height = 20;
 
-inline static uint8_t VGA_entry_color(enum VGA_color fg, enum VGA_color bg);
-inline static uint16_t VGA_entry(unsigned char uc, uint8_t color);
+inline uint8_t VGA_entry_color(enum VGA_color fg, enum VGA_color bg) {
+	return fg | bg << 4;
+}
+inline uint16_t VGA_entry(unsigned char uc, uint8_t color) {
+	return (uint16_t)uc | (uint16_t)color << 8;
+}
 
 #endif

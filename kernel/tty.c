@@ -1,5 +1,6 @@
 #include "include/tty.h"
 #include "include/vga.h"
+#include <string.h>
 
 size_t terminal_row;
 size_t terminal_column;
@@ -15,7 +16,7 @@ void terminal_init(void) {
 	for (size_t y = 0; y < VGA_height; y++) {
 		for (size_t x = 0; x < VGA_width; x++) {
 			const size_t index = y * VGA_width + x;
-			terminal_buffer[index] = vga_entry(' ', terminal_color); // clearing
+			terminal_buffer[index] = VGA_entry(' ', terminal_color); // clearing
 		}
 	}
 }
@@ -24,17 +25,18 @@ void clear_terminal(void) {
 	for (size_t y = 0; y < VGA_height; y++) {
 		for (size_t x = 0; x < VGA_width; x++) {
 			const size_t index = y * VGA_width + x;
-			terminal_buffer[index] = vga_entry(' ', terminal_color); // clearing
+			terminal_buffer[index] = VGA_entry(' ', terminal_color); // clearing
 		}
+	}
 }
 
 void set_terminal_color(uint8_t color) {
-	terminal_color = color	
+	terminal_color = color;	
 }
 
 void put_terminal_entry_at(char c, uint8_t color, size_t x, size_t y) {
 	const size_t index = y * VGA_width + x;
-	terminal_buffer[index] = vga_entry(c, color)
+	terminal_buffer[index] = VGA_entry(c, color);
 }
 
 void putchar(char c) {
@@ -69,7 +71,7 @@ void putchar(char c) {
 
 void write(const char* str, size_t length) {
 	for (size_t i = 0; i < length; i++) 
-		putchar(str[i])
+		putchar(str[i]);
 }
 
 void write_string(const char* str) {

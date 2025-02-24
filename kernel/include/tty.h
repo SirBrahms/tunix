@@ -1,5 +1,9 @@
 #ifndef __TTY_HEADER__
 #define __TTY_HEADER__
+
+#include <stddef.h>
+#include <stdint.h>
+
 void terminal_init(void);
 void clear_terminal(void);
 void set_terminal_color(uint8_t color);
