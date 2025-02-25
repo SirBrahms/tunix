@@ -3,7 +3,7 @@ if [ -d build/ ]; then echo "build/ exists"; else mkdir -p build; fi
 endef
 CC = i686-elf-gcc
 AS = i686-elf-as
-CFLAGS = -g -O2  -Wall -Wextra -std=gnu11 -Iinclude -I../sysroot/usr/local/include  -ffreestanding
+CFLAGS = -g -O2  -Wall -Wextra -std=gnu11 -Iinclude -I../sysroot/usr/local/include  -ffreestanding -D__WITH_SERIAL
 SRC =$(wildcard *.c)
 OBJS =$(patsubst %.c,build/%.o,$(SRC))
 

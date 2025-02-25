@@ -20,7 +20,7 @@ static inline void outb(unsigned char value, unsigned short int port) {
 }
 
 static inline void outw(unsigned short int value, unsigned short int port) {
-	asm volatile ("outw %w0,%w1": :"a" (value), "Nd" (port))
+	asm volatile ("outw %w0,%w1": :"a" (value), "Nd" (port));
 }
 
 #endif

@@ -77,3 +77,48 @@ void write(const char* str, size_t length) {
 void write_string(const char* str) {
 	write(str, strlen(str));
 }
+
+#ifdef __WITH_SERIAL
+
+const unsigned short int COM1 = 1016; 
+
+int serial_init() {
+	outb(0x00, COM1 + 1); // disable interrupts
+	outb(0x80, COM1 + 3); // enable DLAB to set baud rate divisor
+	outb(0x03, COM1 + 0); // divisor = 0x03 (low byte)
+	outb(0x00, COM1 + 1); //                (high byte)
+	outb(0x03, COM1 + 3); // 8 bit, no parity, one stop bit	
+	outb(0xC7, COM1 + 2); // Enable input queue + clear input queue
+	outb(0x0B, COM1 + 4); // enable IRQs
+	outb(0x1E, COM1 + 4); // set in loopback mode (to test if it's there)
+	outb(0xAE, COM1 + 0); // test by sending 0xAE
+
+	if (inb(COM1 + 0) != 0xAE) {
+		return 1; // faulty, did not loopback
+	}
+
+	outb(0x0F, COM1 + 4); // put it in operation mode
+	return 0;
+}
+
+int serial_received() {
+	return inb(COM1 + 5) & 1;
+}
+
+char read_serial() {
+	while (serial_received() == 0);
+
+	return inb(COM1);
+}
+
+int serial_rts() {
+	return inb(COM1 + 5) & 0x20;
+}
+
+void write_serial(char c) {
+	while (serial_rts() == 0);
+
+	outb(c, COM1);	
+}
+
+#endif

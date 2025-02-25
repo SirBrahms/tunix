@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <sys/io.h>
 
 void terminal_init(void);
 void clear_terminal(void);
@@ -12,4 +13,13 @@ void putchar(char c);
 void write(const char* str, size_t length);
 void write_string(const char* str);
 
-#endif
+#ifdef __WITH_SERIAL
+
+int serial_init();
+int serial_received();
+char read_serial(); // blocking
+int serial_rts();
+void write_serial(char c);
+
+#endif // __WITH_SERIAL
+#endif // __TTY_HEADER__

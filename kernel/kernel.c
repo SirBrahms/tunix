@@ -14,6 +14,10 @@
 
 void kernel_main(void) {
 	terminal_init();
+	if (serial_init() == 1) {
+		return;
+	}
 	write_string("Hello World!");
+	write_serial('T');
 	return;
 }
