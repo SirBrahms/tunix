@@ -17,7 +17,10 @@ void kernel_main(void) {
 	if (serial_init() == 1) {
 		return;
 	}
-	write_string("Hello World!");
-	write_serial('T');
+	
+	while (1) {
+		putchar(read_serial());
+	}
+
 	return;
 }
