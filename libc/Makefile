@@ -13,6 +13,10 @@ LIBK_CPPFLAGS=$(CPPFLAGS) -D__is_libk
 
 FREEOBJS=\
 	 string/strlen.o\
+	 string/memcpy.o\
+	 string/memcmp.o\
+	 string/memmove.o\
+	 string/memset.o\
 	 stdlib/abort.o
 
 OBJS=$(FREEOBJS)
