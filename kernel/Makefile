@@ -25,7 +25,7 @@ build/%.o: %.c
 
 build/os.bin: $(OBJS) build/boot.o
 	$(call make_build_dir)
-	$(CC) -v  -T linker.ld -o build/os.bin -ffreestanding -O2 -nostdlib build/*.o build/fs/*.o  -l:libk.a -lgcc --sysroot=../sysroot -L "../sysroot/usr/local/lib" -L build/ 
+	$(CC) -T linker.ld -o build/os.bin -ffreestanding -O2 -nostdlib build/*.o build/fs/*.o  -l:libk.a -lgcc --sysroot=../sysroot -L "../sysroot/usr/local/lib" -L build/ 
 
 iso: build/os.bin
 	if [ -d isodir/ ]; then echo "isodir/ exists"; else mkdir -p isodir/boot/grub; fi
