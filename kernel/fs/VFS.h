@@ -1,9 +1,11 @@
 #ifndef __FS_VFS_HEADER
 #define __FS_VFS_HEADER
 
+#define NODEMAX 10
+
 typedef struct {
 	int flags;
-	FS_node** next_nodes;
+	struct FS_node* next_nodes[NODEMAX];
 	char* name;
 } FS_node;
 
