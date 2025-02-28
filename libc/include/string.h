@@ -12,6 +12,8 @@ void* memmove(void*, const void*, size_t);
 void* memset(void*, int, size_t);
 size_t strlen(const char*);
 
+char* strtok(char* str, const char* delim);
+
 #ifdef __cplusplus
 }
 #endif
