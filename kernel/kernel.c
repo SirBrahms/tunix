@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "include/tty.h"
+#include "include/memmgr.h"
 
 // Compile Time checks
 #if defined(__linux__)
@@ -17,6 +18,9 @@ void kernel_main(void) {
 	if (serial_init() == 1) {
 		return;
 	}
+	HEAP heap;
+
+	heap_init(&heap);
 	
 	while (1) {
 		putchar(read_serial());

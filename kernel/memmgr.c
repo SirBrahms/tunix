@@ -1,7 +1,10 @@
 #include "include/memmgr.h"
 
+HEAP* __kernel_heap;
+
 void heap_init(HEAP* heap) {
 	heap->fblock = 0;
+	__kernel_heap = heap;
 }
 
 int add_block(HEAP* heap, uint32_t* addr, uint32_t size, uint32_t bsize) {

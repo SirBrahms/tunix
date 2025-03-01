@@ -16,6 +16,8 @@ typedef struct {
 	HBLOCK* fblock;
 } HEAP;
 
+extern HEAP* __kernel_heap;
+
 void heap_init(HEAP*);
 int add_block(HEAP*, uint32_t*, uint32_t, uint32_t);
 static uint8_t get_NID(uint8_t, uint8_t);
