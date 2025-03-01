@@ -7,7 +7,7 @@ void heap_init(HEAP* heap) {
 	__kernel_heap = heap;
 }
 
-int add_block(HEAP* heap, uint32_t* addr, uint32_t size, uint32_t bsize) {
+int add_block(HEAP* heap, uintptr_t addr, uint32_t size, uint32_t bsize) {
 	HBLOCK* b;
 	uint32_t ratio;
 	uint8_t* bitmap;

@@ -6,7 +6,7 @@ PREFIX=/usr/local
 INCLUDEDIR=$(PREFIX)/include
 LIBDIR=$(PREFIX)/lib
 
-CFLAGS=-O2 -g -ffreestanding -Wall -Wextra
+CFLAGS=-O2 -g -ffreestanding -Wall -Wextra -I../kernel/include
 CPPFLAGS=-D__is_libc -Iinclude
 LIBK_CFLAGS=$(CFLAGS)
 LIBK_CPPFLAGS=$(CPPFLAGS) -D__is_libk

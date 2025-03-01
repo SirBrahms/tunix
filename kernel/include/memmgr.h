@@ -19,9 +19,8 @@ typedef struct {
 extern HEAP* __kernel_heap;
 
 void heap_init(HEAP*);
-int add_block(HEAP*, uint32_t*, uint32_t, uint32_t);
-static uint8_t get_NID(uint8_t, uint8_t);
+int add_block(HEAP*, uintptr_t, uint32_t, uint32_t);
 void* heap_alloc(HEAP*, size_t);
 void heap_free(HEAP*, void*);
-
+static uint8_t get_NID(uint8_t, uint8_t);
 #endif
