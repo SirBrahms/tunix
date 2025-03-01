@@ -18,7 +18,9 @@ FREEOBJS=\
 	 string/memmove.o\
 	 string/memset.o\
 	 string/strtok.o\
-	 stdlib/abort.o
+	 stdlib/abort.o\
+	 stdlib/malloc.o\
+	 stdlib/free.o\
 
 OBJS=$(FREEOBJS)
 
