@@ -1,14 +1,20 @@
 #include "VFS.h"
 #include <stdbool.h>
+#include <string.h>
 
-
-FS_node root = { VFS_flags.D, {}, "/" };
+FS_node root;
 fd fds[10] = { 0 };
+
+void vfs_init() {
+	root.flags = 1;
+	memset(root.next_nodes, 0, NODEMAX * sizeof(FS_node*));
+	root.name = "/";
+}
 
 FS_node* traverse_nodes(const char* path) {
 	FS_node* current = &root;
 	while (1) {
-		if (strcmp(path, current->name))
+		if (memcmp(path, current->name, strlen(path)))
 			break;
 	
 			
@@ -19,7 +25,7 @@ FS_node* traverse_nodes(const char* path) {
 int open(const char* path, unsigned char flags) {
 	// Look for next free file descriptor
 	int nextfd = 0;
-	while (!fds[nextfd]) {
+	while (!fds[nextfd].mode) {
 		nextfd++;
 	}
 

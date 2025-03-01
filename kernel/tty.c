@@ -69,13 +69,13 @@ void putchar(char c) {
 	}
 }
 
-void write(const char* str, size_t length) {
+void write_tty(const char* str, size_t length) {
 	for (size_t i = 0; i < length; i++) 
 		putchar(str[i]);
 }
 
 void write_string(const char* str) {
-	write(str, strlen(str));
+	write_tty(str, strlen(str));
 }
 
 #ifdef __WITH_SERIAL
