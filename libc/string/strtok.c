@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
-// FIXME: Undefined behavior, need a malloc impl...
 char* laststr;
 
 char* strtok(char* str, const char* delim) {
@@ -28,9 +28,15 @@ char* strtok(char* str, const char* delim) {
 		else 
 			i++;
 	}
-
-	char target[length + 1];
-	memcpy(target, str, i);
-	target[i] = '\0';
-	return target;
+	
+	if (found) {
+		char* target = malloc(length * sizeof(char));
+		target = malloc(length * sizeof(char));
+		memcpy(target, str, i);
+		memcpy(laststr, str + i, length - i);
+		laststr[length - i] = '\0';
+		target[i] = '\0';
+		return target;
+	}
+	return NULL;
 }
