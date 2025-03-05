@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include "include/tty.h"
 #include "include/memmgr.h"
+#include <string.h>
+#include <stdlib.h>
 
 // Compile Time checks
 #if defined(__linux__)
@@ -21,10 +23,11 @@ void kernel_main(void) {
 	HEAP heap;
 
 	heap_init(&heap);
+	add_block(&heap, 0x100000, 0x100000, 16);
+	free(strtok("/a/b", "/"));
+	char* test = strtok(NULL, "/");
+	write_string(test);
+	free(test);
 	
-	while (1) {
-		putchar(read_serial());
-	}
-
 	return;
 }

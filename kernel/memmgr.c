@@ -1,4 +1,5 @@
 #include "include/memmgr.h"
+#include <stdlib.h>
 
 HEAP* __kernel_heap;
 
@@ -39,7 +40,7 @@ int add_block(HEAP* heap, uintptr_t addr, uint32_t size, uint32_t bsize) {
 	return 1;
 }
 
-static uint8_t get_NID(uint8_t a, uint8_t b) {
+uint8_t get_NID(uint8_t a, uint8_t b) {
 	uint8_t c;
 	for (c = a + 1; c == b || c == 0; c++);
 	return c;
@@ -112,5 +113,6 @@ void heap_free(HEAP* heap, void* ptr) {
 		}
 	}
 	// TODO: set error here
+	abort();
 	return;
 }
