@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-char* laststr;
+char laststr[255];
 
 char* strtok(char* str, const char* delim) {
 	size_t i = 0;
@@ -30,8 +30,7 @@ char* strtok(char* str, const char* delim) {
 	}
 	
 	if (found) {
-		char* target = malloc(length * sizeof(char));
-		target = malloc(length * sizeof(char));
+		char* target = malloc(sizeof(char) * length);
 		memcpy(target, str, i);
 		memcpy(laststr, str + i, length - i);
 		laststr[length - i] = '\0';
