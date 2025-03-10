@@ -2,6 +2,7 @@
 #include "include/TSS.h"
 
 GDT GDT_table[4] = { 0 };
+TSS_entry TSS;
 
 void gdt_init() {
 	// GDT_table[0] -> Null descriptor
@@ -39,4 +40,16 @@ void gdt_init() {
 	GDT_table[2].base_high = 0;
 
 	/* Task State Segment */
+
+	GDT_table[3].limit_low = (sizeof(TSS) - 1) & 0xFFFF;
+	GDT_table[3].base_low = (uint32_t)&TSS & 0xFFFFFF;
+	GDT_table[3].type = 0x9;
+	GDT_table[3].descriptor = 0;
+	GDT_table[3].dpl = 0;
+	GDT_table[3].present = 1;
+	GDT_table[3].limit_high = (sizeof(TSS) - 1) >> 16;
+	GDT_table[3].long_mode = 0;
+	GDT_table[3].db = 0;
+	GDT_table[3].granular = 0;
+	GDT_table[3].base_high = (uint32_t)&TSS >> 24; 	
 }
