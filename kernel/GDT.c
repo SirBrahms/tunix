@@ -1,9 +1,6 @@
 #include "include/GDT.h"
 #include "include/TSS.h"
 
-GDT GDT_table[4] = { 0 };
-TSS_entry TSS;
-
 void gdt_init() {
 	// GDT_table[0] -> Null descriptor
 	

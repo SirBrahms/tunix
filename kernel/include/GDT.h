@@ -2,6 +2,7 @@
 #define __GDT_HEADER__
 
 #include <stdint.h>
+#include "TSS.h"
 
 struct _GDT {
 	unsigned int limit_low	: 16;
@@ -34,7 +35,10 @@ struct _GDT {
 } __attribute__((packed));
 typedef struct _GDT GDT;
 
+GDT GDT_table[4] = { 0 };
+TSS_entry TSS;
+
 void gdt_init();
-void _load_gdt(uint16_t limit, uint32_t base);
+void _set_gdt(uint16_t limit, uint32_t base);
 
 #endif
