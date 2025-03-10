@@ -19,11 +19,14 @@ clean:
 build/boot.o: boot.S
 	$(AS) boot.S -o build/boot.o
 
+build/GDT_loader.o: GDT_loader.S
+	$(AS) GDT_loader.S -o build/GDT_loader.o
+
 build/%.o: %.c
 	mkdir -p build/fs
 	$(CC) -c $(CFLAGS) -o $@ $< 
 
-build/os.bin: $(OBJS) build/boot.o
+build/os.bin: $(OBJS) build/boot.o build/GDT_loader.o
 	$(call make_build_dir)
 	$(CC) -T linker.ld -o build/os.bin -ffreestanding -O2 -nostdlib build/*.o build/fs/*.o  -l:libk.a -lgcc --sysroot=../sysroot -L "../sysroot/usr/local/lib" -L build/ 
 

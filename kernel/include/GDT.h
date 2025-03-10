@@ -35,6 +35,6 @@ struct _GDT {
 typedef struct _GDT GDT;
 
 void gdt_init();
-void load_gdt(uint16_t limit, uint32_t base);
+void _load_gdt(uint16_t limit, uint32_t base);
 
 #endif
