@@ -25,7 +25,7 @@ build/%.o: %.c
 	mkdir -p build/fs
 	$(CC) -c $(CFLAGS) -o $@ $< 
 
-build/os.bin: $(OBJS) build/boot.o
+build/os.bin: $(OBJS)
 	$(call make_build_dir)
 	$(CC) -T linker.ld -o build/os.bin -ffreestanding -O2 build/*.o build/*/*.o  -nostdlib -l:libk.a -lgcc --sysroot=../sysroot -L "../sysroot/usr/local/lib" -L build/ -z muldefs
 
