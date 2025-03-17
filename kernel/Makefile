@@ -21,16 +21,13 @@ clean:
 build/boot.o: boot.S
 	$(AS) boot.S -o build/boot.o
 
-build/GDT_loader.o: GDT_loader.S
-	$(AS) GDT_loader.S -o build/GDT_loader.o
-
 build/%.o: %.c
 	mkdir -p build/fs
 	$(CC) -c $(CFLAGS) -o $@ $< 
 
-build/os.bin: $(OBJS) build/boot.o build/GDT_loader.o
+build/os.bin: $(OBJS) build/boot.o
 	$(call make_build_dir)
-	$(CC) -T linker.ld -o build/os.bin -ffreestanding -O2 build/*.o build/*/*.o  -nostdlib -l:libk.a -lgcc --sysroot=../sysroot -L "../sysroot/usr/local/lib" -L build/
+	$(CC) -T linker.ld -o build/os.bin -ffreestanding -O2 build/*.o build/*/*.o  -nostdlib -l:libk.a -lgcc --sysroot=../sysroot -L "../sysroot/usr/local/lib" -L build/ -z muldefs
 
 iso: build/os.bin
 	if [ -d isodir/ ]; then echo "isodir/ exists"; else mkdir -p isodir/boot/grub; fi

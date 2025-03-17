@@ -57,18 +57,27 @@ GDT gdt_init(GDT** GDT_tbl) {
 }
 #endif
 
-void entry_init(GDT_entry* entry, uint32_t limit, uint32_t base, uint8_t access, uint8_t flags) {
-	
-	
-	entry->limit_low = limit & 0xFFFF;
-	entry->base_low = base & 0xFFFFFF;
-	entry->accessed = access >> 7;
-	entry->read_write = access >> 6 & 0b1;
-	entry->dc = access >> 5 & 0b1;
-	entry->executable = access >> 4 & 0b1;
-	entry->descriptor = access >> 3 & 0b1;
-	entry->dpl = access >> 2 & 0b11;
-	entry->present = access & 0b1;
+void entry_init(int num, uint32_t limit, uint32_t base, uint8_t access, uint8_t flags) {
+	GDT[num].base_low = base & 0xFFFF;
+	GDT[num].base_mid = (base >> 16) & 0xFF;
+	GDT[num].base_high = (base >> 24) & 0xFF;
+
+	GDT[num].limit_low = limit & 0xFFFF;
+	GDT[num].granularity = (limit >> 16) & 0x0F;
+
+	GDT[num].granularity |= (flags & 0xF0);
+	GDT[num].access = access;
 }
 
+void gdt_init() {
+	// Set GDTR struct
+	gp.limit = sizeof(GDT_entry) * 1 - 1;
+	gp.base = (unsigned int)&GDT;
 
+	// create entries
+	entry_init(0, 0, 0, 0, 0); // Null descriptor
+	entry_init(1, 0xFFFFFFFF, 0, 0x9A, 0xCF); // Kernel code
+	entry_init(2, 0xFFFFFFFF, 0, 0x92, 0xCF); // Kernel data
+	
+	load_GDT();
+}
