@@ -76,8 +76,8 @@ void gdt_init() {
 
 	// create entries
 	entry_init(0, 0, 0, 0, 0); // Null descriptor
-	entry_init(1, 0xFFFFFFFF, 0, 0x9A, 0xCF); // Kernel code
-	entry_init(2, 0xFFFFFFFF, 0, 0x92, 0xCF); // Kernel data
+	entry_init(1, 0xFFFFFFFF, 0x00400000, 0x9A, 0xCF); // Kernel code
+	entry_init(2, 0xFFFFFFFF, 0x00800000, 0x92, 0xCF); // Kernel data
 	
 	load_GDT();
 }

@@ -2,6 +2,7 @@
 #define __GDT_HEADER__
 
 #include <stdint.h>
+
 struct _GDT_entry {
 	unsigned short limit_low;
 	unsigned short base_low;

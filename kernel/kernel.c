@@ -16,15 +16,20 @@
 #error "Not compiling to i386"
 #endif
 
+HEAP kheap;
+
 void kernel_main(void) {
 	gdt_init();
 
+
+
 	terminal_init();
 	if (serial_init() == 1) {
-		return;
+		abort();
 	}
 
 	putchar(read_serial());
+		
 
 	return;
 }
