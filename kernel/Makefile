@@ -18,8 +18,11 @@ all: build/os.bin
 clean: 
 	rm -r build
 
-build/boot.o: boot.S
-	$(AS) boot.S -o build/boot.o
+
+
+
+build/%.o: %.S
+	$(AS) -c -o $@ $<
 
 build/%.o: %.c
 	mkdir -p build/fs

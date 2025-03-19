@@ -29,9 +29,11 @@ _start:
 1:	hlt
 	jmp 1b
 
-// TODO: move this into its own file
+/*
 .global load_GDT
 .type load_GDT, @function
 load_GDT:
 	lgdt [gp]
 	ret
+*/
+
