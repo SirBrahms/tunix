@@ -9,3 +9,6 @@ libc/*/*.o
 libc/*/*/*.o
 libc/*.a
 sysroot
+*/*.swp
+*/*/*.swp
+*/*/*/*.swp
