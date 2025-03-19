@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "include/tty.h"
-#include "include/memmgr.h"
 #include "include/GDT.h"
 #include <string.h>
 #include <stdlib.h>
@@ -15,8 +14,6 @@
 #if !defined(__i386__)
 #error "Not compiling to i386"
 #endif
-
-HEAP kheap;
 
 void kernel_main(void) {
 	gdt_init();
