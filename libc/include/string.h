@@ -13,7 +13,9 @@ void* memset(void*, int, size_t);
 size_t strlen(const char*);
 
 char* strtok(char* str, const char* delim);
-
+char* strpbrk(char*, const char*);
+size_t strspn(const char*, const char*);
+char* strchr(const char*, char);
 #ifdef __cplusplus
 }
 #endif

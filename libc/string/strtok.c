@@ -1,41 +1,37 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include "tty.h"
 
-char laststr[255];
+static char* laststr;
 
-char* strtok(char* str, const char* delim) {
-	size_t i = 0;
-	size_t j = 0;
-	size_t length = strlen(str);
-	size_t delim_len = strlen(delim);
-	bool found = false;
+char* strtok(char* s, const char* delim) {
+	if (s == NULL)
+		s = laststr;
+	else
+		laststr = s;
 
-	if (str == NULL)
-		str = laststr;
-	
-	while (str[i] && !found)
-	{
-		if (str[i] == delim[0]) {
-			for (j = 0; j < delim_len; j++) {
-				if (str[i] != delim[j] || str[i] == '\0')
-					break;
-				else
-					i++;
-			}
-			found = true;
-		}
-		else 
-			i++;
+	while (*laststr != '\0' && strchr(delim, *laststr) != NULL) {
+        	laststr++;
+    	}
+
+	if (*laststr == '\0') {
+		return NULL;
 	}
-	
-	if (found) {
-		char* target = malloc(sizeof(char) * length);
-		memcpy(target, str, i);
-		memcpy(laststr, str + i, length - i);
-		laststr[length - i] = '\0';
-		target[i] = '\0';
-		return target;
-	}
-	return NULL;
+
+	char* token = laststr;
+
+	while (*laststr != '\0'  && strchr(delim, *laststr) == NULL) {
+        	laststr++;
+    	}
+
+	if (*laststr != '\0') {
+        	*laststr = '\0'; // Null-terminate the token
+        	laststr++; // Move to the next character
+    	} 
+	else {
+        	laststr = NULL; // End of string reached
+    	}
+    
+    	return token;
 }

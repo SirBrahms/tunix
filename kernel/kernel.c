@@ -25,8 +25,12 @@ void kernel_main(void) {
 		abort();
 	}
 
-	putchar(read_serial());
-		
+	char* x = strtok("-abc-=-def-ghi", "-");
+	char* y = strtok(NULL, "-=");
+
+	write_string(x);
+	write_string("\n");
+	write_string(y);
 
 	return;
 }

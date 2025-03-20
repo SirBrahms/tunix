@@ -17,7 +17,10 @@ FREEOBJS=\
 	 string/memcmp.o\
 	 string/memmove.o\
 	 string/memset.o\
+	 string/strchr.o\
 	 string/strtok.o\
+	 string/strpbrk.o\
+	 string/strspn.o\
 	 stdlib/abort.o\
 	 stdlib/malloc.o\
 	 stdlib/free.o\
