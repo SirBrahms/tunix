@@ -72,12 +72,12 @@ void entry_init(int num, uint32_t limit, uint32_t base, uint8_t access, uint8_t 
 void gdt_init() {
 	// Set GDTR struct
 	gp.limit = sizeof(GDT) - 1;
-	gp.base = (unsigned int)&GDT;
+	gp.base = (unsigned int)GDT;
 
 	// create entries
 	entry_init(0, 0, 0, 0, 0); // Null descriptor
-	entry_init(1, 0x000FFFFF, 0x00200000, 0x9A, 0xCF); // Kernel code
-	entry_init(2, 0x000FFFFF, 0x00200000, 0x92, 0xCF); // Kernel data
+	entry_init(1, 0x00FFFFFF, 0x00000000, 0x9A, 0xCF); // Kernel code
+	entry_init(2, 0x00FFFFFF, 0x00000000, 0x92, 0xCF); // Kernel data
 	
-	load_GDT();
+	//load_GDT();
 }

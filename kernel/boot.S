@@ -17,12 +17,57 @@ stack_bottom:
 .skip 16384		// 16 KiB
 stack_top:
 
+/*
+ * Create the GDT
+ */
+.section .data
+gdt_start:
+gdt_null:
+.long 0x0
+.long 0x0
+
+gdt_kcode:
+.word 0xFFFF             # limit
+.word 0x0                # base
+.byte 0x0                # base
+.byte 0b10011010         # 1st flags | type flags
+.byte 0b11001111         # 2nd flags | limit
+.byte 0x0                # base
+
+gdt_kdata:
+.word 0xFFFF             # limit
+.word 0x0                # base
+.byte 0x0                # base
+.byte 0b10010010         # 1st flags | type flags
+.byte 0b11001111         # 2nd flags | limit
+.byte 0x0                # base
+gdt_end:
+
+gdtr:
+.word (gdt_end - gdt_start - 1)
+.long gdt_start
+
 .section .text
 .global _start
 .type _start, @function
 _start:
+	# set the position of `%esp' to the top of the stack
+	mov $stack_top, %esp
+
+	# GDT, paging, and other features
+flush_gdt:
 	cli
-	mov $stack_top, %esp // stack pointer register points to top of the stack (which grows downwards)
+	lgdt (gdtr)
+	movw $0x10, %ax
+	movw %ax, %ds
+	movw %ax, %es
+	movw %ax, %fs
+	movw %ax, %gs
+	movw %ax, %ss
+	ljmp $0x08, $flush_end
+flush_end:
+
+boot_kernel:
 	call kernel_main
 
 	// Put system into an infinite loop

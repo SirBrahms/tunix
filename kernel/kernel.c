@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "include/tty.h"
-#include "include/GDT.h"
 #include "IDT.h"
 #include <string.h>
 #include <stdlib.h>
@@ -18,16 +17,17 @@
 #endif
 
 void kernel_main(void) {
-	gdt_init();
 	idt_init();
-
 	vfs_init();
 
 	terminal_init();
 	if (serial_init() == 1) {
 		abort();
 	}
-	
+
+	write_string("test\n");
+
 	asm volatile("int $0x80");
+
 	return;
 }
