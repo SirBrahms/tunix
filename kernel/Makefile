@@ -5,7 +5,8 @@ CC = i686-elf-gcc
 AS = i686-elf-as
 CFLAGS = -g -O2  -Wall -Wextra -std=gnu11 -Iinclude -I../sysroot/usr/local/include  -ffreestanding -D__WITH_SERIAL
 SRC =$(wildcard *.c)
-SRC +=$(wildcard fs/*.c)
+SRC +=$(wildcard */*.c)
+SRC +=$(wildcard */*/*.c)
 SRC +=$(wildcard *.S)
 OBJS =$(patsubst %.c,build/%.o,$(SRC))
 OBJS +=$(patsubst %.S,build/%.o,$(SRC))
@@ -18,9 +19,6 @@ all: build/os.bin
 clean: 
 	rm -r build
 
-
-
-
 build/%.o: %.S
 	$(AS) -c -o $@ $<
 
@@ -30,7 +28,7 @@ build/%.o: %.c
 
 build/os.bin: $(OBJS)
 	$(call make_build_dir)
-	$(CC) -T linker.ld -o build/os.bin -ffreestanding -O2 build/*.o build/*/*.o  -nostdlib -l:libk.a -lgcc --sysroot=../sysroot -L "../sysroot/usr/local/lib" -L build/  -z muldefs 
+	$(CC) -T linker.ld -o build/os.bin -ffreestanding -O2 build/*.o build/*/*.o build/*/*/*.o  -nostdlib -l:libk.a -lgcc --sysroot=../sysroot -L "../sysroot/usr/local/lib" -L build/  -z muldefs 
 
 
 iso: build/os.bin
