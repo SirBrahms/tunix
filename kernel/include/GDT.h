@@ -19,8 +19,8 @@ struct _gdtr {
 } __attribute__((packed));
 typedef struct _gdtr GDTR;
 
-GDT_entry GDT[3];
-GDTR gp;
+__attribute__((aligned(8))) GDT_entry GDT[3];
+__attribute__((aligned(8))) GDTR gp;
 
 //GDT* gdt_init();
 void entry_init(int num, uint32_t limit, uint32_t base, uint8_t access, uint8_t flags); // initialises one gdt_entry

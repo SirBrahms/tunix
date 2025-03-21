@@ -21,6 +21,7 @@ stack_top:
 .global _start
 .type _start, @function
 _start:
+	cli
 	mov $stack_top, %esp // stack pointer register points to top of the stack (which grows downwards)
 	call kernel_main
 

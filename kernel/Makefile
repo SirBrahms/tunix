@@ -8,6 +8,7 @@ SRC =$(wildcard *.c)
 SRC +=$(wildcard */*.c)
 SRC +=$(wildcard */*/*.c)
 SRC +=$(wildcard *.S)
+SRC +=$(wildcard */*.S)
 OBJS =$(patsubst %.c,build/%.o,$(SRC))
 OBJS +=$(patsubst %.S,build/%.o,$(SRC))
 

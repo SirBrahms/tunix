@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include "include/tty.h"
 #include "include/GDT.h"
+#include "IDT.h"
 #include <string.h>
 #include <stdlib.h>
 #include "fs/VFS.h"
@@ -18,6 +19,7 @@
 
 void kernel_main(void) {
 	gdt_init();
+	idt_init();
 
 	vfs_init();
 
@@ -25,8 +27,7 @@ void kernel_main(void) {
 	if (serial_init() == 1) {
 		abort();
 	}
-
-
-	open("/a", 1);
+	
+	asm volatile("int $0x80");
 	return;
 }
