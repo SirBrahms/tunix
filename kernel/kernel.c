@@ -5,6 +5,7 @@
 #include "include/GDT.h"
 #include <string.h>
 #include <stdlib.h>
+#include "fs/VFS.h"
 
 // Compile Time checks
 #if defined(__linux__)
@@ -18,19 +19,14 @@
 void kernel_main(void) {
 	gdt_init();
 
-
+	vfs_init();
 
 	terminal_init();
 	if (serial_init() == 1) {
 		abort();
 	}
 
-	char* x = strtok("-abc-=-def-ghi", "-");
-	char* y = strtok(NULL, "-=");
 
-	write_string(x);
-	write_string("\n");
-	write_string(y);
-
+	open("/a", 1);
 	return;
 }

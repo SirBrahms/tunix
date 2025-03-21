@@ -7,13 +7,13 @@
 #define NODEMAX 10
 
 typedef struct {
-	int flags;
+	int flags; // VFS_flags
 	struct FS_node* next_nodes[NODEMAX];
 	char* name;
 } FS_node;
 
 typedef struct {
-	int mode;
+	int mode; // FFLAGS
 	FS_node* assoc_node;
 } fd;
 
@@ -24,13 +24,13 @@ typedef enum _VFS_flags {
 	IO = 8
 } VFS_flags;
 
-enum file_flags {
+typedef enum _file_flags {
 	RDONLY = 0b00000001,
 	WRONLY = 0b00000010,
 	APPEND = 0b00000100,
 	CREATE = 0b00001000,
 	TRUNC  = 0b00010000,
-};
+} FFLG;
 
 FS_node* traverse_nodes(const char*);
 
