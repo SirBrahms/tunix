@@ -1,4 +1,4 @@
-#include "VFS.h"
+#include "fs/VFS.h"
 #include <string.h>
 
 FS_node root;
