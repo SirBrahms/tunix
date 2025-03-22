@@ -33,7 +33,10 @@ void kernel_main(void) {
 	
 	uint16_t* buf = NULL;
 
-	ahci_read_sectors(master_dev, 0, 0, 100, buf);
-
+	ahci_read_sectors(master_dev, 0, 0, 2, buf);
+	write_string((char*)buf);
+	ahci_write_sectors(master_dev, 0, 0, 1, (uint16_t*)"A");
+	ahci_read_sectors(master_dev, 0, 0, 2, buf);
+	write_string((char*)buf);
 	return;
 }

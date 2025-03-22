@@ -32,6 +32,7 @@
 #define ATA_DEV_DRQ	0x08
 
 #define ATA_CMD_READ_DMA_EXT	0x25	// Read Command
+#define ATA_CMD_WRITE_DMA_EXT	0x35	// Write Command
 
 typedef enum {
 	FIS_TYPE_REG_H2D	= 0x27,	// Register FIS - host to device
@@ -289,5 +290,6 @@ void ahci_start_cmd(volatile HBA_PORT*);
 void ahci_stop_cmd(volatile HBA_PORT*);
 int ahci_find_cmdslot(volatile HBA_PORT*);
 bool ahci_read_sectors(volatile HBA_PORT*, uint32_t, uint32_t, uint32_t, uint16_t*);
+bool ahci_write_sectors(volatile HBA_PORT*, uint32_t, uint32_t, uint32_t, uint16_t*);
 
 #endif

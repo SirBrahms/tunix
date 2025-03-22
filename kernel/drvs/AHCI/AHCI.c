@@ -201,4 +201,82 @@ bool ahci_read_sectors(volatile HBA_PORT* port, uint32_t startl, uint32_t starth
 
 	return true;
 
-}	
+}
+
+bool ahci_write_sectors(volatile HBA_PORT* port, uint32_t startl, uint32_t starth, uint32_t count, uint16_t* buf) {
+	port->istat = (uint32_t) -1; // clear all pending interrupts
+	int spin = 0; // spin timeout counter
+	int slot = ahci_find_cmdslot(port);
+	if (slot == -1) 
+		return false;
+	
+	HBA_CMD_HEADER* cmdh = (HBA_CMD_HEADER*)port->cl_base;
+	cmdh += slot;
+	cmdh->cfis_len = sizeof(FIS_REG_H2D) / sizeof(uint32_t); //(since one entry is 32 bits)
+	cmdh->w_dir = 0; // read from device to host
+	cmdh->prdtl = (uint16_t)((count - 1) >> 4) + 1;
+
+	HBA_CMD_TBL* cmdt = (HBA_CMD_TBL*)(cmdh->ctbl_desc_addr);
+	memset(cmdt, 0, sizeof(HBA_CMD_TBL) + ((cmdh->prdtl - 1) * sizeof(HBA_PRDT_ENTRY)));
+	
+	int i = 0;
+	for (i = 0; i < cmdh->prdtl - 1; i++) {
+		cmdt->prdt_entry[i].data_base = (uint32_t)buf;
+		cmdt->prdt_entry[i].data_base_u = 0;
+		cmdt->prdt_entry[i].dbc = 8 * 1024 - 1; // 8K bytes (always minus one)
+		cmdt->prdt_entry[i].i = 1;
+
+		buf += 4 * 1024;
+		count -= 16;
+	}
+	
+	// last entry
+	cmdt->prdt_entry[i].data_base = (uint32_t) buf;
+	cmdt->prdt_entry[i].dbc = (count << 9) - 1;	// 512 bytes per sector
+	cmdt->prdt_entry[i].i = 1;
+
+	// Setup command
+	FIS_REG_H2D* cmdfis = (FIS_REG_H2D*)(&cmdt->cfis);
+
+	cmdfis->fis_type = FIS_TYPE_REG_H2D;
+	cmdfis->comctrl = 1; // Command
+	cmdfis->command = ATA_CMD_WRITE_DMA_EXT;
+
+	cmdfis->lba0 = (uint8_t)(startl & 0xFF);
+	cmdfis->lba1 = (uint8_t)((startl >> 8) & 0xFF);
+	cmdfis->lba2 = (uint8_t)((startl >> 16) & 0xFF);
+	cmdfis->device = 1 << 6; // lba mode
+	cmdfis->lba3 = (uint8_t)((startl >> 24) & 0xFF);
+	cmdfis->lba4 = (uint8_t)(starth & 0xFF);
+	cmdfis->lba5 = (uint8_t)((starth >> 8) & 0xFF);
+
+	cmdfis->count_low = count & 0xFF;
+	cmdfis->count_high = (count >> 8) & 0xFF;
+
+	while ((port->tfd & (ATA_DEV_BUSY | ATA_DEV_DRQ)) && spin < 100000) {
+		spin++;
+	}
+	if (spin == 100000) {
+		write_string("Port is hung\n");
+		return false;
+	}
+
+	port->ci = 1 << slot; // issue the command
+	
+	while (1) {
+		if ((port->ci & (1 << slot)) == 0)
+			break;
+		if (port->istat & HBA_PxIS_TFES) {
+			write_string("Read error\n");
+			return false;
+		}
+	}
+
+	if (port->istat & HBA_PxIS_TFES) {
+		write_string("Read error\n");
+		return false;
+	}
+
+	return true;
+
+}
