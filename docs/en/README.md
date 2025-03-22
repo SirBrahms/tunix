@@ -1,5 +1,5 @@
 # The TUNIX Documentation
-In the following Documentation, important APIs and User Features of TUNIX will be explained.
+TUNIX is a simple operating system built mostly from scratch. The following documentation will outline important Kernel and libk APIS, as well as usage of the **P**recompiled **U**ser **Sh**ell (PUSh). Additionally, there are instructions for building the latest version of TUNIX and Coding Conventions for potential contributors or curious onlookers.
 ## Contents
 1. libk
     1. string.h
@@ -12,7 +12,8 @@ In the following Documentation, important APIs and User Features of TUNIX will b
     5. fs/VFS.h
     6. fs/FAT32.h
     7. isrs/ISR.h
-3. PUSH
+3. PUSh
     1. Usage
     2. Commands
-4. Conventions
+4. Build
+5. Conventions
