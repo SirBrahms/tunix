@@ -64,7 +64,6 @@ uint32_t pci_find_ahci() {
 			uint8_t devinfo = pci_valid_dev(bus, dev);
 
 			if (devinfo > 0) {
-				char s[10];
 				// valid device found - check for AHCI
 				uint8_t header_type = pci_read_byte(bus, dev, 0, 0xE);
 				uint8_t clcode = pci_read_byte(bus, dev, 0, 0xB);
