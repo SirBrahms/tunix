@@ -12,19 +12,31 @@ SRC +=$(wildcard */*.S)
 OBJS =$(patsubst %.c,build/%.o,$(SRC))
 OBJS +=$(patsubst %.S,build/%.o,$(SRC))
 
+GRUBCFG = menuentry "TUNIX" { \
+	 multiboot /boot/os.bin \
+	 }
 
 .PHONY: all
-all: build/os.bin
+all: build/setassert build/os.bin
 
 .PHONY: clean
 clean: 
 	rm -r build
+	rm -r isodir
+
+build/setassert:
+	mkdir -p build/fs
+	mkdir -p build/drvs/PCI
+	mkdir -p build/drvs/AHCI
+	mkdir -p build/isrs
+	mkdir -p isodir/boot/grub
+	echo $(GRUBCFG) > isodir/boot/grub/grub.cfg
+	touch build/setassert
 
 build/%.o: %.S
 	$(AS) -c -o $@ $<
 
 build/%.o: %.c
-	mkdir -p build/fs
 	$(CC) -c $(CFLAGS) -o $@ $< 
 
 build/os.bin: $(OBJS)
@@ -33,6 +45,5 @@ build/os.bin: $(OBJS)
 
 
 iso: build/os.bin
-	if [ -d isodir/ ]; then echo "isodir/ exists"; else mkdir -p isodir/boot/grub; fi
 	cp build/os.bin isodir/boot/
 	grub-mkrescue -o build/os.iso isodir
