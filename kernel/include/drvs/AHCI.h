@@ -1,7 +1,8 @@
 #ifndef __DRVS_AHCI_HEADER__
 #define __DRVS_AHCI_HEADER__
 
-#include  <stdint.h>
+#include <stdint.h>
+#include <stdbool.h>
 
 // SATA signatures
 #define SATA_SIG_ATA	0x00000101	// SATA drive
@@ -17,6 +18,20 @@
 
 #define HBA_PORT_IPM_ACTIVE 	1
 #define HBA_PORT_DET_PRESENT 	3
+
+#define	AHCI_BASE	0x400000	// 4M
+
+#define HBA_PxCMD_ST    0x0001		// DMA Instruction Reader enabled (= 1)
+#define HBA_PxCMD_FRE   0x0010		// Accept new FISes (= 1)
+#define HBA_PxCMD_FR    0x4000		// DMA FIS Receiver Running? (running = 1)
+#define HBA_PxCMD_CR    0x8000		// Instruction Reader Running? (running = 1)
+
+#define HBA_PxIS_TFES	1 << 30		// Task State File Error
+
+#define ATA_DEV_BUSY	0x80
+#define ATA_DEV_DRQ	0x08
+
+#define ATA_CMD_READ_DMA_EXT	0x25	// Read Command
 
 typedef enum {
 	FIS_TYPE_REG_H2D	= 0x27,	// Register FIS - host to device
@@ -162,7 +177,7 @@ struct _HBA_PORT { /* volatile! */
 	uint32_t cl_base_u;	// command list base address upper 32
 	uint32_t fis_base;	// FIS base address
 	uint32_t fis_base_u;	// FIS base address upper 32
-	uint32_t iaddr;		// interrupt address
+	uint32_t istat;		// interrupt status
 	uint32_t ienable;	// interrupt enable
 	uint32_t cmstat;	// command and status
 	uint32_t rsv0;		// reserved
@@ -198,7 +213,7 @@ struct _HBA_MEM { /* volatile */
 	
 	uint8_t vendor[0x60];	// vendor-specific registers
 	
-	HBA_PORT ports[16];	// just 16 ports for now (up to 32)
+	HBA_PORT ports[32];	// just 16 ports for now (up to 32)
 } __attribute__((packed));
 typedef struct _HBA_MEM HBA_MEM;
 
@@ -245,7 +260,7 @@ typedef struct _HBA_CMD_HEADER HBA_CMD_HEADER;
 
 struct _HBA_PRDT_ENTRY {
 	uint32_t data_base; // data base address
-	uint32_t data_baseu; // data base address upper 32 bits
+	uint32_t data_base_u; // data base address upper 32 bits
 	uint32_t rsv0; // reserved
 	
 	uint32_t dbc	: 22; // byte count (max 4M)
@@ -261,11 +276,18 @@ struct _HBA_CMD_TBL {
 
 	uint8_t rsv[48]; // reserved
 	
-	HBA_PRDT_ENTRY prdt_entry[1]; // Physical region description table entries (0 - 65535)
+	HBA_PRDT_ENTRY prdt_entry[8]; // Physical region description table entries (0 - 65535)
 } __attribute__((packed));
 typedef struct _HBA_CMD_TBL HBA_CMD_TBL;
 
+volatile HBA_PORT* master_dev;
+
 void ahci_probe_port(volatile HBA_MEM*);
 int ahci_check_dev_type(volatile HBA_PORT*);
+void ahci_port_rebase(volatile HBA_PORT*, int);
+void ahci_start_cmd(volatile HBA_PORT*);
+void ahci_stop_cmd(volatile HBA_PORT*);
+int ahci_find_cmdslot(volatile HBA_PORT*);
+bool ahci_read_sectors(volatile HBA_PORT*, uint32_t, uint32_t, uint32_t, uint16_t*);
 
 #endif

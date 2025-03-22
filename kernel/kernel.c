@@ -29,6 +29,11 @@ void kernel_main(void) {
 
 	volatile HBA_MEM* abar = (volatile HBA_MEM*)pci_find_ahci();
 	ahci_probe_port(abar);
+	write_string("got past it");	
 	
+	uint16_t* buf = NULL;
+
+	ahci_read_sectors(master_dev, 0, 0, 100, buf);
+
 	return;
 }
