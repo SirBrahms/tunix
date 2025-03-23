@@ -3,6 +3,7 @@
 #include <string.h>
 #include "fs/FAT32.h"
 #include "drvs/AHCI.h"
+#include <stdbool.h>
 
 void p_main() {
 
@@ -39,48 +40,136 @@ char* itoa(int value, char* result, int base) {
     return result;
 }
 
-void interpret() {
+int interpret() {
 	if (memcmp(current_cmd, "ls", 2) == 0) 
 		ls();
-	else if (memcmp(current_cmd, "cat", 3) == 0)
-		cat();
 	else if (memcmp(current_cmd, "isr", 3) == 0)
 		isysr();
+	else if (memcmp(current_cmd, "cd", 2) == 0)
+		cd();
 	else if (memcmp(current_cmd, "clear", 5) == 0)
 		clear_terminal();
+	else if (memcmp(current_cmd, "cat", 3) == 0) 
+		cat();
+	else if (memcmp(current_cmd, "exit", 4) == 0) 
+		return 1;
 	else {
 		write_string("[ WARN ] Command not recognised\n");
 	}
-	return;
+	return 0;
 }
 
 static uint8_t temp_buf[32];
 
 void ls() {
-	uint32_t root_cluster32 = fat32_ext->root_cluster;
 	uint8_t buf[512];
-	ahci_read_sectors(master_dev, get_cluster_sec(root_cluster32) + partition_lba, 0, 1, (uint16_t*)buf);
+	ahci_read_sectors(master_dev, get_cluster_sec(current_cluster), 0, 1, (uint16_t*)buf);
 	
 	size_t centry = 0;
 	while (buf[centry * 32] != 0 && centry * 32 < 512) {
 		if (buf[centry * 32] != 0xE5) {
 			if (buf[centry * 32 + 11] == 0x0F) {
 				memcpy(temp_buf, &buf[centry * 32], 32);
-				goto next;
+				centry++;
+				continue;
 			}
 			fat_dir cdir;
 			memcpy(&cdir, &buf[centry * 32], sizeof(fat_dir));
 			write_tty((char*)cdir.name, 11);
 			putchar('\n');
 		}
-next:
 		centry++;	
 	}
 
 	return;
 }
 
+bool compare_fat_name(fat_dir* entry, const char* name) {
+	char padded_name[11];
+    	memset(padded_name, ' ', 11); // Fill with spaces (FAT standard)
+
+    	const char *ext = strchr(name, '.'); // Find extension separator
+    	size_t name_len = ext ? (size_t)(ext - name) : strlen(name);
+    	size_t ext_len = ext ? strlen(ext + 1) : 0;
+
+    	if (name_len > 8) name_len = 8;
+    	if (ext_len > 3) ext_len = 3;
+
+    	memcpy(padded_name, name, name_len);
+    	if (ext) memcpy(padded_name + 8, ext + 1, ext_len);
+
+    	return memcmp(entry->name, padded_name, 11) == 0;
+}
+
 void cat() {
+	uint8_t buf[512];
+	ahci_read_sectors(master_dev, get_cluster_sec(current_cluster), 0, 1, (uint16_t*)buf);
+	
+	char* tok = strtok(current_cmd, " ");
+	tok = strtok(NULL, " ");
+	size_t centry = 0;
+	while (buf[centry * 32] != 0 && centry * 32 < 512) {
+		if (buf[centry * 32] != 0xE5) { // Unused
+			if (buf[centry * 32 + 11] == 0x0F) {
+				memcpy(temp_buf, &buf[centry * 32], 32);
+				centry++;
+				continue;
+			}
+			fat_dir cdir;
+			memcpy(&cdir, &buf[centry * 32], sizeof(fat_dir));
+			
+			if (compare_fat_name(&cdir, tok)) {
+				uint32_t fc = ((uint32_t)(cdir.cluster_high << 16)) | cdir.cluster_low;
+				uint8_t filebuf[cdir.filesize];
+				ahci_read_sectors(master_dev, fc, 0, 1, (uint16_t*)filebuf);
+				write_tty((char*)filebuf, cdir.filesize);
+
+				return;
+			}
+		}
+		centry++;
+	}
+
+	write_string("[ WARN ] File doesn't exist\n");
+
+}
+
+void cd() {
+	uint8_t buf[512];
+	ahci_read_sectors(master_dev, get_cluster_sec(current_cluster), 0, 1, (uint16_t*)buf);
+	
+	char* tok = strtok(current_cmd, " ");
+	tok = strtok(NULL, " ");
+	size_t centry = 0;
+	while (buf[centry * 32] != 0 && centry * 32 < 512) {
+		if (buf[centry * 32] != 0xE5) { // Unused
+			if (buf[centry * 32 + 11] == 0x0F) {
+				memcpy(temp_buf, &buf[centry * 32], 32);
+				centry++;
+				continue;
+			}
+			fat_dir cdir;
+			memcpy(&cdir, &buf[centry * 32], sizeof(fat_dir));
+			if (memcmp(tok, "..", 2) == 0) {
+				current_cluster = prev_cluster;
+				return;
+			}
+			else if (memcmp(tok, "/", 1) == 0) {
+				current_cluster = fat32_ext->root_cluster;
+				return;
+			}
+			
+			if (compare_fat_name(&cdir, tok)) {
+				// found our dir, cd
+				prev_cluster = current_cluster;
+				current_cluster = ((uint32_t)(cdir.cluster_high << 16)) | cdir.cluster_low;
+				return;
+			}
+		}
+		centry++;
+	}
+
+	write_string("[ WARN ] Directory doesn't exist\n");
 }
 
 void isysr() {

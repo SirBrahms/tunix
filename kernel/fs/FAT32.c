@@ -47,6 +47,7 @@ void fat32_init() {
 	first_fat_sec = boot_fat.reserved_secs;
 	data_secs = total_sectors - (boot_fat.reserved_secs + (boot_fat.fat_num * fat_size) + root_dir_secs);
 	total_clusters = data_secs / boot_fat.secs_per_cluster;
+	current_cluster = fat32_ext->root_cluster;
+	prev_cluster = fat32_ext->root_cluster;
 }
-
 

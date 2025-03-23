@@ -22,14 +22,16 @@
 void KIS_loop() {
 	while (1) {
 		char c = read_serial();
-		putchar(c);
 
-		if (c == '\n') {	
-			interpret();
+		if (c == '\n' || c == '\r') {	
+			putchar('\n');
+			if (interpret())
+				break;
 			cmd_index = 0;
 			current_cmd[cmd_index] = '\0';
 		}
 		else if (cmd_index < 128) {
+			putchar(c);
 			current_cmd[cmd_index] = c;
 			cmd_index++;
 			current_cmd[cmd_index] = '\0'; // terminate the string

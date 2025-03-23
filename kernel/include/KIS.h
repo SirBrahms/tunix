@@ -7,10 +7,11 @@
 char current_cmd[128];
 size_t cmd_index = 0;
 
-void interpret();
+int interpret();
 void p_main();
 void ls();
-void cat();
 void isysr();
+void cd();
+void cat();
 
 #endif
