@@ -4,36 +4,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-/**
- * C++ version 0.4 char* style "itoa":
- * Written by Lukás Chmela
- * Released under GPLv3.
- */
-char* itoa(int value, char* result, int base) {
-    // check that the base if valid
-    if (base < 2 || base > 36) { *result = '\0'; return result; }
-
-    char* ptr = result, *ptr1 = result, tmp_char;
-    int tmp_value;
-
-    do {
-        tmp_value = value;
-        value /= base;
-        *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_value - value * base)];
-    } while ( value );
-
-    // Apply negative sign
-    if (tmp_value < 0) *ptr++ = '-';
-    *ptr-- = '\0';
-
-    // Reverse the string
-    while(ptr1 < ptr) {
-        tmp_char = *ptr;
-        *ptr--= *ptr1;
-        *ptr1++ = tmp_char;
-    }
-    return result;
-}
 
 void parse_fat_br(uint8_t* raw, fat_BR* br) {
 	memcpy(br->bootjmp, &raw[0], 3);
@@ -60,8 +30,7 @@ void fat32_init() {
 
 	ahci_read_sectors(master_dev, 0, 0, 1, (uint16_t*)buf);
 	
-	char s[32];
-	uint32_t partition_lba = (uint32_t)((buf[0x1BE + 11] << 24) + (buf[0x1BE + 10] << 16) + (buf[0x1BE + 9] << 8) + buf[0x1BE + 8]);
+	partition_lba = (uint32_t)((buf[0x1BE + 11] << 24) + (buf[0x1BE + 10] << 16) + (buf[0x1BE + 9] << 8) + buf[0x1BE + 8]);
 	
 	uint8_t bpb_temp[512];
 	ahci_read_sectors(master_dev, partition_lba, 0, 1, (uint16_t*)bpb_temp);
@@ -78,8 +47,6 @@ void fat32_init() {
 	first_fat_sec = boot_fat.reserved_secs;
 	data_secs = total_sectors - (boot_fat.reserved_secs + (boot_fat.fat_num * fat_size) + root_dir_secs);
 	total_clusters = data_secs / boot_fat.secs_per_cluster;
-
-	write_string(itoa(total_clusters, s, 10));
 }
 
 

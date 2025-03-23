@@ -77,8 +77,12 @@ uint32_t first_data_sec = 0;
 uint32_t first_fat_sec = 0;
 uint32_t data_secs = 0;
 uint32_t total_clusters = 0;
-
+uint32_t partition_lba = 0;
 
 void fat32_init();
+
+inline uint32_t get_cluster_sec(int clusternr) {
+	return ((clusternr - 2) * boot_fat.secs_per_cluster) + first_data_sec;
+}
 
 #endif

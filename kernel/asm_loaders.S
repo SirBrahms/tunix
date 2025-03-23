@@ -3,5 +3,5 @@
 load_IDT:
 	cli
 	lidt iptr
-	sti // enable interrupts again
+	// sti // enable interrupts again
 	ret

@@ -35,6 +35,7 @@ build/setassert:
 	mkdir -p build/drvs/AHCI
 	mkdir -p build/isrs
 	mkdir -p isodir/boot/grub
+	mkdir -p build/KIS
 	echo $(GRUBCFG) > isodir/boot/grub/grub.cfg
 	echo $(HDCFG) > build/hd.layout
 	touch build/setassert
@@ -65,6 +66,7 @@ img: build/os.bin
 	grub-install --boot-directory=/mnt/os/boot --no-floppy --modules="normal part_msdos fat multiboot biosdisk" /dev/loop0
 	echo $(GRUBCFG) > /mnt/os/boot/grub/grub.cfg
 	cp build/os.bin /mnt/os/boot
+	touch /mnt/os/a.txt
 	sync
 	umount /mnt/os
 	losetup -D
