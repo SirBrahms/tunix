@@ -15,5 +15,5 @@ TUNIX is a simple operating system built mostly from scratch. The following docu
 3. PUSh
     1. Usage
     2. Commands
-4. Build
+4. [Build](https://github.com/SirBrahms/tunix/blob/main/docs/en/build.md#04---building-tunix)
 5. Conventions
