@@ -1,6 +1,10 @@
 define make_build_dir
 if [ -d build/ ]; then echo "build/ exists"; else mkdir -p build; fi
 endef
+define newline
+
+
+endef
 CC = i686-elf-gcc
 AS = i686-elf-as
 CFLAGS = -g -O2  -Wall -Wextra -std=gnu11 -Iinclude -I../sysroot/usr/local/include  -ffreestanding -D__WITH_SERIAL
@@ -15,6 +19,8 @@ OBJS +=$(patsubst %.S,build/%.o,$(SRC))
 GRUBCFG = menuentry "TUNIX" { \
 	 multiboot /boot/os.bin \
 	 }
+
+
 
 .PHONY: all
 all: build/setassert build/os.bin
@@ -31,6 +37,7 @@ build/setassert:
 	mkdir -p build/isrs
 	mkdir -p isodir/boot/grub
 	echo $(GRUBCFG) > isodir/boot/grub/grub.cfg
+	echo $(HDCFG) > build/hd.layout
 	touch build/setassert
 
 build/%.o: %.S
@@ -47,3 +54,18 @@ build/os.bin: $(OBJS)
 iso: build/os.bin
 	cp build/os.bin isodir/boot/
 	grub-mkrescue -o build/os.iso isodir
+
+img: build/os.bin
+	dd if=/dev/zero of=build/disk.img bs=512 count=131072
+	sfdisk build/disk.img < hd.layout
+	losetup /dev/loop0 build/disk.img 
+	losetup /dev/loop1 build/disk.img -o 1048576
+	mkdosfs -F32 -f 2 /dev/loop1
+	mkdir -p /mnt/os
+	mount /dev/loop1 /mnt/os
+	grub-install --boot-directory=/mnt/os/boot --no-floppy --modules="normal part_msdos fat multiboot biosdisk" /dev/loop0
+	echo $(GRUBCFG) > /mnt/os/boot/grub/grub.cfg
+	cp build/os.bin /mnt/os/boot
+	sync
+	umount /mnt/os
+	losetup -D
