@@ -153,8 +153,8 @@ bool ahci_read_sectors(volatile HBA_PORT* port, uint32_t startl, uint32_t starth
 	}
 	
 	// last entry
-	cmdt->prdt_entry[i].data_base = (uint32_t) buf;
-	cmdt->prdt_entry[i].dbc = (count << 9) - 1;	// 512 bytes per sector
+	cmdt->prdt_entry[i].data_base = (uint32_t)buf;
+	cmdt->prdt_entry[i].dbc = (count * 512) - 1;	// 512 bytes per sector
 	cmdt->prdt_entry[i].i = 1;
 
 	// Setup command

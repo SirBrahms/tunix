@@ -1,6 +1,7 @@
-label: dos 
-label-id: 0xabc2317f  
-device: build/disk.img 
-unit: sectors 
-sector-size: 512 
+label: dos
+label-id: 0xd25de77f
+device: build/disk.img
+unit: sectors
+sector-size: 512
+
 build/disk.img1 : start=        2048, size=      129024, type=c, bootable

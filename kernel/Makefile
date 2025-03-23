@@ -21,7 +21,6 @@ GRUBCFG = menuentry "TUNIX" { \
 	 }
 
 
-
 .PHONY: all
 all: build/setassert build/os.bin
 
