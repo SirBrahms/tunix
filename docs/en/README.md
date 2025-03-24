@@ -4,6 +4,8 @@ TUNIX is a simple operating system built mostly from scratch. The following docu
 1. libk
     1. string.h
     2. stdlib.h
+    3. sys/cdefs.h
+    4. sys/io.h
 2. Kernel API
     1. TTY.h
     2. IDT.h
