@@ -1,4 +1,4 @@
-# KIS
+# 03 - KIS
 KIS, which stands for Kernel Integrated Shell, is a barebones kernelmode shell program, which serves to interactively test OS-Functionality in absence of usermode. It interfaces directly with the FAT32 and TTY drivers to deliver output. 
 ## Members
 KIS.h exposes the following Members:<br>
