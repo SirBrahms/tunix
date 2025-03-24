@@ -30,6 +30,14 @@ void clear_terminal(void) {
 	}
 }
 
+void clear_current_line(void) {
+	for (size_t x = 0; x < VGA_width; x++) {
+		const size_t index = terminal_column * VGA_width + x;
+
+		terminal_buffer[index] = VGA_entry(' ', terminal_color);
+	}
+}
+
 void set_terminal_color(uint8_t color) {
 	terminal_color = color;	
 }

@@ -19,32 +19,6 @@
 #error "Not compiling to i386"
 #endif
 
-void KIS_loop() {
-	while (1) {
-		char c = read_serial();
-
-		if (c == '\n' || c == '\r') {	
-			putchar('\n');
-			if (interpret())
-				break;
-			cmd_index = 0;
-			current_cmd[cmd_index] = '\0';
-		}
-		else if (cmd_index < 128) {
-			putchar(c);
-			current_cmd[cmd_index] = c;
-			cmd_index++;
-			current_cmd[cmd_index] = '\0'; // terminate the string
-		}
-		else {
-			write_string("[ WARN ] Command too long\n");
-			cmd_index = 0;
-			current_cmd[cmd_index] = '\0';
-			putchar('\n');
-		}
-	}
-}
-
 void kernel_main(void) {
 	idt_init();
 	volatile HBA_MEM* abar = (volatile HBA_MEM*)pci_find_ahci();
@@ -59,6 +33,7 @@ void kernel_main(void) {
 
 	//write_string("test:\n");
 	
-	KIS_loop();
+	// Call Kernel Internal Shell
+	KIS();
 	return;
 }

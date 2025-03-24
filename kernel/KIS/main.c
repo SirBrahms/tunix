@@ -5,8 +5,34 @@
 #include "drvs/AHCI.h"
 #include <stdbool.h>
 
-void p_main() {
+void KIS() {
+	while (1) {
+		char c = read_serial();
 
+		if (c == '\n' || c == '\r') {	
+			putchar('\n');
+			if (interpret())
+				break;
+			cmd_index = 0;
+			current_cmd[cmd_index] = '\0';
+		}
+		else if (c == 0x8 || c == 0x7F) {
+			cmd_index--;
+			current_cmd[cmd_index] = '\0';
+		}
+		else if (cmd_index < 128) {
+			putchar(c);
+			current_cmd[cmd_index] = c;
+			cmd_index++;
+			current_cmd[cmd_index] = '\0'; // terminate the string
+		}
+		else {
+			write_string("[ WARN ] Command too long\n");
+			cmd_index = 0;
+			current_cmd[cmd_index] = '\0';
+			putchar('\n');
+		}
+	}
 }
 
 /**
@@ -82,6 +108,7 @@ void ls() {
 	}
 
 	return;
+
 }
 
 bool compare_fat_name(fat_dir* entry, const char* name) {
@@ -105,11 +132,9 @@ void cat() {
 	uint8_t buf[512];
 	ahci_read_sectors(master_dev, get_cluster_sec(current_cluster), 0, 1, (uint16_t*)buf);
 	
-	char* tok = strtok(current_cmd, " ");
-	tok = strtok(NULL, " ");
 	size_t centry = 0;
 	while (buf[centry * 32] != 0 && centry * 32 < 512) {
-		if (buf[centry * 32] != 0xE5) { // Unused
+		if (buf[centry * 32] != 0xE5) {
 			if (buf[centry * 32 + 11] == 0x0F) {
 				memcpy(temp_buf, &buf[centry * 32], 32);
 				centry++;
@@ -117,20 +142,13 @@ void cat() {
 			}
 			fat_dir cdir;
 			memcpy(&cdir, &buf[centry * 32], sizeof(fat_dir));
-			
-			if (compare_fat_name(&cdir, tok)) {
-				uint32_t fc = ((uint32_t)(cdir.cluster_high << 16)) | cdir.cluster_low;
-				uint8_t filebuf[cdir.filesize];
-				ahci_read_sectors(master_dev, fc, 0, 1, (uint16_t*)filebuf);
-				write_tty((char*)filebuf, cdir.filesize);
-
-				return;
-			}
+			write_tty((char*)&buf[centry * 32], 32);
 		}
-		centry++;
+		centry++;	
 	}
+	putchar('\n');
 
-	write_string("[ WARN ] File doesn't exist\n");
+	return;
 
 }
 
