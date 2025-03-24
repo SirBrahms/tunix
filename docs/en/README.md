@@ -8,14 +8,14 @@ TUNIX is a simple operating system built mostly from scratch. The following docu
     4. [sys/io.h](https://github.com/SirBrahms/tunix/blob/main/docs/en/libk-sys-io.md#0104---sysioh)
 2. Kernel API
     1. TTY.h
-    2. IDT.h
-    3. drvs/AHCI.h
-    4. drvs/PCI.h
-    5. fs/VFS.h
-    6. fs/FAT32.h
-    7. isrs/ISR.h
+    2. VGA.h
+    3. IDT.h
+    4. isrs/ISR.h
+    5. drvs/PCI.h
+    6. drvs/AHCI.h
+    7. fs/FAT32.h
 3. [KIS](https://github.com/SirBrahms/tunix/blob/main/docs/en/KIS.md#03---kis)
     1. Usage
     2. Commands
 4. [Build](https://github.com/SirBrahms/tunix/blob/main/docs/en/build.md#04---building-tunix)
-5. Conventions
+5. Conventions (Under Construction)

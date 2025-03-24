@@ -1,4 +1,4 @@
-# 01.01 - TTY.h
+# 02.01 - TTY.h
 This header is responsible for writing character data to the device's video memory. It also handles serial i/o.
 ## Members
 ### void terminal_init(void)
