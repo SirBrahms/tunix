@@ -5,19 +5,19 @@ This header contains relevant functions and information for reading a FAT32 File
 ### fat_32_ext_BR
 ```c
 struct _fat32_ext_BR {
-	uint32_t fat_size; // FAT size in sectors
+	uint32_t fat_size; 
 	uint16_t flags;
 	uint16_t version;
-	uint32_t root_cluster; // cluster number of the root directory
-	uint16_t fs_info_sec; // sector of the fs_info structure
-	uint16_t backup_boot_sec; // sector number of the Backup Boot Sector
-	uint8_t rsv0[12]; // reserved
-	uint8_t drive_nr; // drive number
-	uint8_t ntflags; // flags under WindowsNT
-	uint8_t signature; // signature must be 0x28 or 0x29
-	uint32_t serial_num; // volume ID (serial Number)
-	uint8_t volume_name[11]; // volume name string (padded with spaces)
-	uint8_t system_identifier[8]; // System Identifier, always FAT32 (padded with three spaces)
+	uint32_t root_cluster; 
+	uint16_t fs_info_sec; 
+	uint16_t backup_boot_sec; 
+	uint8_t rsv0[12]; 
+	uint8_t drive_nr; 
+	uint8_t ntflags; 
+	uint8_t signature; 
+	uint32_t serial_num; 
+	uint8_t volume_name[11]; 
+	uint8_t system_identifier[8]; 
 } __attribute__((packed));
 typedef struct _fat32_ext_BR fat32_ext_BR;
 ```
@@ -39,22 +39,22 @@ typedef struct _fat32_ext_BR fat32_ext_BR;
 ### struct fat_BR
 ```c
 struct _fat_BR {
-	uint8_t bootjmp[3]; // asm instructions to jump over the BPB
-	uint8_t oem_id[8]; // DOS: version, linux: mkdosfs, padded with spaces
-	uint16_t bytes_per_sec; // number of bytes in a sector (little endian)
-	uint8_t secs_per_cluster; // number of sectors per cluster
-	uint16_t reserved_secs; // number of reserved sectors
-	uint8_t fat_num; // number of FATs
-	uint16_t root_entries; // number of rood directory entries
-	uint16_t sec_num_16; // number of sectors
-	uint8_t media_desc; // Media Descriptor Type
-	uint16_t secs_per_fat; // Number of Sectors per FAT (FAT12/16) only
-	uint16_t secs_per_track; // Num. of Sectors per track
-	uint16_t heads; // number of heads
-	uint32_t hidden_secs; // number of hidden sectors
-	uint32_t sec_num_32; // the sector count is stored here if num_sec = 0 = 65535
+	uint8_t bootjmp[3]; 
+	uint8_t oem_id[8]; 
+	uint16_t bytes_per_sec; 
+	uint8_t secs_per_cluster; 
+	uint16_t reserved_secs; 
+	uint8_t fat_num; 
+	uint16_t root_entries; 
+	uint16_t sec_num_16; 
+	uint8_t media_desc; 
+	uint16_t secs_per_fat; 
+	uint16_t secs_per_track; 
+	uint16_t heads; 
+	uint32_t hidden_secs; 
+	uint32_t sec_num_32; 
 	
-	uint8_t extended[54]; // space for the extended Boot Record
+	uint8_t extended[54]; 
 } __attribute__((packed)) __attribute__((aligned(8)));
 typedef struct _fat_BR fat_BR;
 ```
@@ -79,17 +79,17 @@ typedef struct _fat_BR fat_BR;
 ### struct fat_dir
 ```c
 struct _fat_dir {
-	uint8_t name[11]; // first 8 = name, last 3 = extension
+	uint8_t name[11]; 
 	uint8_t attributes;
 	uint8_t rsv0; 
 	uint8_t creation_100th;
 	uint16_t creation_time;
 	uint16_t creation_date;
 	uint16_t last_access_date;
-	uint16_t cluster_high; // high 16 bits for the entry's next cluster
+	uint16_t cluster_high; 
 	uint16_t last_mod_date;
 	uint16_t last_mod_time;
-	uint16_t cluster_low; // low 16 bits for the entry's next cluster
+	uint16_t cluster_low; 
 	uint32_t filesize;
 } __attribute__((packed));
 typedef struct _fat_dir fat_dir;
@@ -112,10 +112,10 @@ typedef struct _fat_dir fat_dir;
 ### struct fat_lfn
 ```c
 struct _fat_lfn {
-	uint8_t order; // where the long file name appears
-	uint16_t chars0[5]; // the first five two byte characters (65 00 66 00 etc...)
-	uint8_t attribute; // always 0x0F to indicate a long file name
-	uint8_t long_entry_type; // long entry type (0 = name entry)
+	uint8_t order; 
+	uint16_t chars0[5]; 
+	uint8_t attribute; 
+	uint8_t long_entry_type; 
 	uint8_t checksum; 
 	uint16_t chars1[6];
 	uint8_t rsv0;
