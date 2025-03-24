@@ -12,7 +12,7 @@ TUNIX is a simple operating system built mostly from scratch. The following docu
     5. fs/VFS.h
     6. fs/FAT32.h
     7. isrs/ISR.h
-3. KIS
+3. [KIS](https://github.com/SirBrahms/tunix/blob/main/docs/en/KIS.md#03---kis)
     1. Usage
     2. Commands
 4. [Build](https://github.com/SirBrahms/tunix/blob/main/docs/en/build.md#04---building-tunix)
