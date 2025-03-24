@@ -48,6 +48,8 @@ void put_terminal_entry_at(char c, uint8_t color, size_t x, size_t y) {
 }
 
 void putchar(char c) {
+	if (c ==  '\r')
+		return;
 	if (c == '\n') {
 		terminal_column = 0;
 
