@@ -56,7 +56,7 @@ void write_tty(const char* str, size_t length)
 - Purpose: Writes a string of the given length at the next open position
 - Parameters: 
     - ```const char* c```: The string to write
-    - ````size_t length```: The length of the string
+    - ```size_t length```: The length of the string
 - Return Value: Void
 ### void write_string(const char* str)
 ```c
